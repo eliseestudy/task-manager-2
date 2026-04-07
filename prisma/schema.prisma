@@ -1,0 +1,44 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+enum Status {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+model User {
+  id        Int     @id @default(autoincrement())
+  name      String
+  email     String  @unique
+  tasks     Tasks[]
+}
+
+model Tasks {
+  id            Int       @id @default(autoincrement())
+  title         String
+  description   String?
+  status        Status    @default(PENDING)
+  priority      Priority  @default(LOW)
+
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
+  due_date      DateTime?
+  completed_at  DateTime?
+
+  user_id       Int
+  assign_to     User      @relation(fields: [user_id], references: [id])
+
+  created_by_id       Int
+}
