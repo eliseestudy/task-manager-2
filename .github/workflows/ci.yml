@@ -30,12 +30,12 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       # Image canonique : ghcr.io/<owner>/<nom-du-depot>:latest (visible sous Packages du dépôt)
-      # Alias next-app : garde la compatibilité si ton docker-compose sur le VPS utilise encore ce chemin
+      # Alias task-manager-2 : garde la compatibilité si ton docker-compose sur le VPS utilise encore ce chemin
       - name: Build & Push
         run: |
           docker build \
             -t ghcr.io/${{ github.repository }}:latest \
-            -t ghcr.io/${{ github.repository_owner }}/next-app:latest \
+            -t ghcr.io/${{ github.repository_owner }}/task-manager-2:latest \
             .
           docker push ghcr.io/${{ github.repository }}:latest
-          docker push ghcr.io/${{ github.repository_owner }}/next-app:latest
+          docker push ghcr.io/${{ github.repository_owner }}/task-manager-2:latest
