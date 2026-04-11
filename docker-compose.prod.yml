@@ -1,0 +1,15 @@
+# Déploiement VPS : pas de build local, uniquement l’image GHCR.
+# Copier ce fichier sur le serveur (ex. dans ~/app/) avec le même contenu.
+# Le workflow CI exporte APP_IMAGE=ghcr.io/<owner>/<repo>:latest avant compose.
+services:
+  app:
+    image: ${APP_IMAGE}
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: "file:/app/data/tasks.db"
+    volumes:
+      - app_data:/app/data
+
+volumes:
+  app_data:
