@@ -55,9 +55,20 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           envs: GHCR_TOKEN,GHCR_USER,DEPLOY_IMAGE
           script: |
+            set -eu
             echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
             cd app
             export APP_IMAGE="$DEPLOY_IMAGE"
-            docker compose -f docker-compose.yml pull
-            docker compose -f docker-compose.yml up -d
+            # Plugin Compose v2 : "docker compose". Sinon binaire classique : "docker-compose".
+            # (Podman en alias "docker" peut produire : unknown shorthand flag: 'f' in -f)
+            if docker compose version >/dev/null 2>&1; then
+              docker compose -f docker-compose.yml pull
+              docker compose -f docker-compose.yml up -d
+            elif command -v docker-compose >/dev/null 2>&1; then
+              docker-compose -f docker-compose.yml pull
+              docker-compose -f docker-compose.yml up -d
+            else
+              echo "Installez Docker Compose v2 (plugin) ou le paquet docker-compose." >&2
+              exit 1
+            fi
             docker logout ghcr.io
