@@ -1,6 +1,5 @@
 services:
   app:
-#    image: ${APP_IMAGE:-task-manager-2-app:local}
     build: .
     ports:
       - "3000:3000"
