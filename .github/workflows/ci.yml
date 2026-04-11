@@ -39,3 +39,25 @@ jobs:
             .
           docker push ghcr.io/${{ github.repository }}:latest
           docker push ghcr.io/${{ github.repository_owner }}/task-manager-2:latest
+
+      # Déploiement automatique sur le VPS
+      # Nécessite le secret GHCR_TOKEN : PAT GitHub avec le droit read:packages
+      # (sans ça, docker compose pull échoue avec "denied" sur une image privée)
+      - name: Deploy via SSH
+        env:
+          GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
+          GHCR_USER: ${{ github.repository_owner }}
+          DEPLOY_IMAGE: ghcr.io/${{ github.repository }}:latest
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          envs: GHCR_TOKEN,GHCR_USER,DEPLOY_IMAGE
+          script: |
+            echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
+            cd app
+            export APP_IMAGE="$DEPLOY_IMAGE"
+            docker compose -f docker-compose.prod.yml pull
+            docker compose -f docker-compose.prod.yml up -d
+            docker logout ghcr.io
