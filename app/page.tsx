@@ -22,7 +22,7 @@ export default function Home() {
             Exercice — Gestion de tâches
           </p>
           <h1 className="text-balance text-4xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-5xl sm:leading-tight">
-            Pilotez vos tâches avec aisance !
+            Pilotez toutes vos tâches avec aisance !
           </h1>
           <p className="mt-5 max-w-xl text-pretty text-lg leading-relaxed text-zinc-600 dark:text-zinc-400">
             Centralisez ce que vous avez à faire, ajoutez de nouvelles tâches et
